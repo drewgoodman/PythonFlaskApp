@@ -107,12 +107,11 @@ def login():
             password = data['password']
 
             if sha256_crypt.verify(password_candidate, password):
-                session['logged_in'] = True
-                session['username'] = username
+                # session['logged_in'] = True
+                # session['username'] = username
                 flash("You are now logged in",'success')
-                return render_template("login.html")
-                # return redirect(url_for('dashboard'))
-
+                return redirect(url_for('dashboard'))
+                
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)

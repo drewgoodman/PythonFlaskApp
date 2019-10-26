@@ -107,11 +107,13 @@ def login():
             password = data['password']
 
             if sha256_crypt.verify(password_candidate, password):
-                session['logged_in'] = True
-                session['username'] = username
+                error = 'Login Successful!'
+                return render_template('login.html', error=error)
+                # session['logged_in'] = True
+                # session['username'] = username
                 # flash("You are now logged in",'success')
                 # return redirect(url_for('dashboard'))
-                return render_template("login.html")
+                # return render_template("login.html")
                 
             else:
                 error = 'Invalid login'
@@ -119,7 +121,7 @@ def login():
             cur.close()
 
         else:
-            error = 'Username not found'
+            error = 'User Name not found'
             return render_template('login.html', error=error)
 
     return render_template("login.html")

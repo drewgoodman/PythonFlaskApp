@@ -1,6 +1,5 @@
-CREATE DATABASE myflaskapp;
 
-USE myflaskapp;
+USE heroku_88cd028805afec2;
 
 CREATE TABLE users(
 	id INT(11) AUTO_INCREMENT PRIMARY KEY,

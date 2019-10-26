@@ -11,9 +11,9 @@ log = logging.create_logger(app)
 #Config MySQL
 # app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_HOST'] = 'us-cdbr-iron-east-05.cleardb.net'
-app.config['MYSQL_USER'] = 'bdcb35e07390c6'
-app.config['MYSQL_PASSWORD'] = '411337d4'
-app.config['MYSQL_DB'] = 'heroku_3f78262ed32148b'
+app.config['MYSQL_USER'] = 'b488587d4e9f50'
+app.config['MYSQL_PASSWORD'] = 'aa9ada5e'
+app.config['MYSQL_DB'] = 'heroku_88cd028805afec2'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # init MYSQL

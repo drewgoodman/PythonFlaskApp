@@ -107,10 +107,10 @@ def login():
             password = data['password']
 
             if sha256_crypt.verify(password_candidate, password):
+                session['logged_in'] = True
+                session['username'] = username
                 error = 'Login Successful!'
                 return render_template('login.html', error=error)
-                # session['logged_in'] = True
-                # session['username'] = username
                 # flash("You are now logged in",'success')
                 # return redirect(url_for('dashboard'))
                 # return render_template("login.html")

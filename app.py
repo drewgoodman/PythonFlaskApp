@@ -15,6 +15,7 @@ app.config['MYSQL_USER'] = 'b488587d4e9f50'
 app.config['MYSQL_PASSWORD'] = 'aa9ada5e'
 app.config['MYSQL_DB'] = 'heroku_88cd028805afec2'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config['SECRET_KEY'] = '123secretkey'
 
 # init MYSQL
 mysql = MySQL(app)
@@ -118,7 +119,7 @@ def login():
             cur.close()
 
         else:
-            error = 'User Name not found'
+            error = 'Username not found'
             return render_template('login.html', error=error)
 
     return render_template("login.html")
@@ -179,5 +180,4 @@ def add_article():
 
 
 if __name__ == "__main__":
-    app.secret_key='secret123'
     app.run()

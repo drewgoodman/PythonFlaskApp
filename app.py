@@ -84,7 +84,7 @@ def register():
 
         flash('You are now registered and can log in', 'success')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('index',))
     return render_template('register.html', form=form)
 
 # USER LOGIN
@@ -110,7 +110,9 @@ def login():
                 session['logged_in'] = True
                 session['username'] = username
                 flash("You are now logged in",'success')
-                return redirect(url_for('dashboard'))
+                return render_template("login.html")
+                # return redirect(url_for('dashboard'))
+
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask import Flask, render_template, flash, redirect, url_for, session, logging, request, jsonify
 # from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
@@ -52,6 +52,14 @@ def article(id):
     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
     article = cur.fetchone()
     return render_template('article.html', article=article)
+
+
+@app.route('/remote/article/<string:id>')
+def remote_article(id):
+    cur = mysql.connection.cursor()
+    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+    article = cur.fetchone()
+    return article
 
 
 class RegisterForm(Form):
@@ -196,7 +204,6 @@ def edit_article(id):
     # Populate Article form fields
     form.title.data = article["title"]
     form.body.data = article["body"]
-
 
     if request.method == "POST" and form.validate():
         title = request.form['title']

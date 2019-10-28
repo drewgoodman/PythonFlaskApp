@@ -1,0 +1,5 @@
+api_host = 'us-cdbr-iron-east-05.cleardb.net'
+api_user = 'b488587d4e9f50'
+api_password = 'aa9ada5e'
+api_db = 'heroku_88cd028805afec2'
+api_secret_key = '123secretkey'

@@ -1,6 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request, jsonify
 from flask_cors import CORS
-# from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
@@ -53,6 +52,7 @@ def article(id):
     cur = mysql.connection.cursor()
     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
     article = cur.fetchone()
+    cur.close()
     return render_template('article.html', article=article)
 
 
@@ -61,7 +61,43 @@ def remote_article(id):
     cur = mysql.connection.cursor()
     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
     article = cur.fetchone()
+    cur.close()
     return article
+
+
+@app.route('/remote/articles', methods=["GET"])
+def remote_articles():
+    cur = mysql.connection.cursor()
+    result = cur.execute("SELECT * FROM articles")
+    articles = cur.fetchall()
+    cur.close()
+    return jsonify(articles)
+
+
+@app.route('/remote/add_article', methods=["POST"])
+def remote_add_article():
+    author = request.json['author']
+    title = request.json['title']
+    body = request.json['body']
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)", (title, body, author))
+    mysql.connection.commit()
+    cur.close()
+    return "Insertion success"
+
+    # form = ArticleForm(request.form)
+    # if request.method == "POST" and form.validate():
+    #     title = form.title.data
+    #     body = form.body.data
+    #     cur = mysql.connection.cursor()
+    #     cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)", (title, body, session['username']))
+    #     mysql.connection.commit()
+    #     cur.close()
+    #     flash('Article Created', 'success')
+    #     return redirect(url_for("dashboard"))
+    # return render_template("add_article.html", form=form)
+
+
 
 
 class RegisterForm(Form):

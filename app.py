@@ -6,16 +6,17 @@ from passlib.hash import sha256_crypt
 from functools import wraps
 
 app = Flask(__name__)
-log = logging.create_logger(app)
+
+import config
 
 #Config MySQL
 # app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_HOST'] = 'us-cdbr-iron-east-05.cleardb.net'
-app.config['MYSQL_USER'] = 'b488587d4e9f50'
-app.config['MYSQL_PASSWORD'] = 'aa9ada5e'
-app.config['MYSQL_DB'] = 'heroku_88cd028805afec2'
+app.config['MYSQL_HOST'] = config.api_host
+app.config['MYSQL_USER'] = config.api_user
+app.config['MYSQL_PASSWORD'] = config.api_password
+app.config['MYSQL_DB'] = config.api_db
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-app.config['SECRET_KEY'] = '123secretkey'
+app.config['SECRET_KEY'] = config.api_secret_key
 
 # init MYSQL
 mysql = MySQL(app)
@@ -144,6 +145,7 @@ def logout():
     flash('You are now logged out',"success")
     return redirect(url_for("login"))
 
+
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
@@ -159,9 +161,11 @@ def dashboard():
 
     return render_template("dashboard.html")
 
+
 class ArticleForm(Form):
     title = StringField('Title', [validators.Length(min=1, max=200)])
     body = TextAreaField('Body', [validators.Length(min=30)])
+
 
 @app.route('/add_article', methods=["GET","POST"])
 @is_logged_in
@@ -179,5 +183,46 @@ def add_article():
     return render_template("add_article.html", form=form)
 
 
+
+@app.route('/edit_article/<string:id>', methods=["GET","POST"])
+@is_logged_in
+def edit_article(id):
+    cur = mysql.connection.cursor()
+
+    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+    article = cur.fetchone()
+    form = ArticleForm(request.form)
+    
+    # Populate Article form fields
+    form.title.data = article["title"]
+    form.body.data = article["body"]
+
+
+    if request.method == "POST" and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE articles SET title=%s, body=%s WHERE id = %s", (title, body, id))
+        mysql.connection.commit()
+        cur.close()
+        flash('Article Updated', 'success')
+        return redirect(url_for("dashboard"))
+    return render_template("edit_article.html", form=form)
+
+
+@app.route('/delete_article/<string:id>', methods=["POST"])
+@is_logged_in
+def delete_article(id):
+    #Create cursor
+    cur = mysql.connection.cursor()
+
+    # Execute
+    cur.execute("DELETE FROM articles WHERE id = %s", [id])
+    mysql.connection.commit()
+    cur.close()
+    flash('Article Deleted', 'success')
+    return redirect(url_for("dashboard"))
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

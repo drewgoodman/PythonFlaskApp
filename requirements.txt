@@ -23,7 +23,7 @@ mccabe==0.6.1
 mysqlclient==1.4.4
 numpy==1.17.1
 passlib==1.7.1
-pipenv==2018.11.26
+pipenv==2022.1.8
 pylint==2.3.1
 requests==2.22.0
 six==1.12.0
